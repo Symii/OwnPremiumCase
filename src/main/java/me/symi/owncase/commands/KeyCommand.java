@@ -174,8 +174,6 @@ public class KeyCommand implements CommandExecutor {
                 {
                     sender.sendMessage("Podany gracz jest offline");
                 }
-
-
             }
             else
             {
