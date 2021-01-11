@@ -6,8 +6,11 @@ api-version: 1.15
 website: https://owncraft.eu
 
 commands:
+  case:
+    aliases: [ownpremiumcase,owncase]
+    description: Create premium case command
   key:
-    aliases: [ownpremiumcase,opc]
+    aliases: [ownkey]
     description: Get case key command
   setcase:
     description: Set case location command
@@ -18,4 +21,7 @@ permissions:
     default: op
   ownpremiumcase.key:
     description: Get key command permission
+    default: op
+  ownpremiumcase.case:
+    description: Create case command permission
     default: op

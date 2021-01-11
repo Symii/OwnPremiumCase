@@ -39,32 +39,16 @@ public class SetcaseCommand implements CommandExecutor {
                 {
                     symiCase.setNormalCaseLocation(block.getLocation());
                 }
-                else if(args[0].equalsIgnoreCase("rare"))
-                {
-                    symiCase.setRareCaseLocation(block.getLocation());
-                }
-                else if(args[0].equalsIgnoreCase("epic"))
-                {
-                    symiCase.setEpicCaseLocation(block.getLocation());
-                }
-                else if(args[0].equalsIgnoreCase("legendary"))
-                {
-                    symiCase.setLegendaryCaseLocation(block.getLocation());
-                }
-                else if(args[0].equalsIgnoreCase("kasyno"))
-                {
-                    symiCase.setKasynoCaseLocation(block.getLocation());
-                }
                 else
                 {
-                    player.sendMessage(ChatUtil.fixColorsWithPrefix("&7Poprawne uzycie: &c/setcase [normal;rare,epic,legendary;kasyno]"));
+                    player.sendMessage(ChatUtil.fixColorsWithPrefix("&7Poprawne uzycie: &c/setcase [normal]"));
                     return true;
                 }
                 player.sendMessage(ChatUtil.fixColorsWithPrefix("&aPomyslnie zapisano lokacje dla skrzynki!"));
             }
             else
             {
-                player.sendMessage(ChatUtil.fixColorsWithPrefix("&7Poprawne uzycie: &c/setcase [normal;rare,epic,legendary;kasyno]"));
+                player.sendMessage(ChatUtil.fixColorsWithPrefix("&7Poprawne uzycie: &c/setcase [normal]"));
             }
         }
         else

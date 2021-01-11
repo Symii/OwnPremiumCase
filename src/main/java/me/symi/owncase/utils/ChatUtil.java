@@ -4,11 +4,6 @@ import org.bukkit.ChatColor;
 
 public class ChatUtil {
 
-    public static String format(String text)
-    {
-        return ChatColor.translateAlternateColorCodes('&', text);
-    }
-
     public static String fixColors(String text)
     {
         return ChatColor.translateAlternateColorCodes('&', text);
@@ -16,7 +11,7 @@ public class ChatUtil {
 
     public static String fixColorsWithPrefix(String text)
     {
-        return "§f§lO§9§lC §8| " + ChatColor.translateAlternateColorCodes('&', text);
+        return "§f§lO§9§lC §8»§7 " + ChatColor.translateAlternateColorCodes('&', text);
     }
 
 }

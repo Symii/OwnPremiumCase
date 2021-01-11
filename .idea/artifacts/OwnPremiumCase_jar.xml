@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="OwnPremiumCase:jar">
+    <output-path>$USER_HOME$/Desktop/Serwer/1.15.2/plugins</output-path>
+    <root id="archive" name="OwnPremiumCase.jar">
+      <element id="module-output" name="OwnPremiumCase" />
+    </root>
+  </artifact>
+</component>
