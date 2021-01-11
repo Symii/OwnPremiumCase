@@ -9,16 +9,16 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class PremiumKey {
 
-    public static ItemStack NormalKey(int amount)
+    public static ItemStack getKey(String case_name, int amount)
     {
-        ItemStack normalKey = new ItemStack(Material.TRIPWIRE_HOOK, amount);
-        ItemMeta normalKeyMeta = normalKey.getItemMeta();
-        normalKeyMeta.setDisplayName(ChatUtil.fixColors("&7Klucz do zwyklej skrzynki"));
-        normalKeyMeta.setLore(Arrays.asList(
-                ChatUtil.fixColors("&6Otworzysz tym &7zwykla &6skrzynke")));
-        normalKey.setItemMeta(normalKeyMeta);
+        ItemStack key = new ItemStack(Material.TRIPWIRE_HOOK, amount);
+        ItemMeta key_meta = key.getItemMeta();
+        key_meta.setDisplayName(ChatUtil.fixColors("&dKlucz do " + case_name + " skrzynki"));
+        key_meta.setLore(Arrays.asList(
+                ChatUtil.fixColors("&6Otworzysz tym &e" + case_name + " &6skrzynke")));
+        key.setItemMeta(key_meta);
 
-        return normalKey;
+        return key;
     }
 
 }

@@ -11,18 +11,20 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-
 public class KeyCommand implements CommandExecutor {
 
-    Main plugin = Main.getPlugin(Main.class);
+    private final Main plugin;
+
+    public KeyCommand(Main plugin)
+    {
+        this.plugin = plugin;
+    }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] args)
+    public boolean onCommand(CommandSender sender, Command cmd, String s, String[] args)
     {
-
-        if(!(sender instanceof Player))
+        if(sender.hasPermission("symi.case.admin"))
         {
-
             if(args.length == 3)
             {
                 int amount = 0;
@@ -33,7 +35,7 @@ public class KeyCommand implements CommandExecutor {
                 }
                 catch(Exception e)
                 {
-                    sender.sendMessage("/key [normal;rare;epic;legend;all] [ilosc] [gracz;all]");
+                    sender.sendMessage("/key [nazwa skrzynki] [ilosc] [gracz]");
                 }
 
                 if(amount <= 0)
@@ -42,46 +44,12 @@ public class KeyCommand implements CommandExecutor {
                     return false;
                 }
 
-                if(args[2].equalsIgnoreCase("all"))
+                if(Bukkit.getPlayer(args[2]) != null && Bukkit.getPlayer(args[2]).isOnline())
                 {
-                    if(args[0].equalsIgnoreCase("normal"))
-                    {
-                        ItemStack normal = PremiumKey.NormalKey(amount);
-
-                        for(Player p : Bukkit.getOnlinePlayers())
-                        {
-                            p.getInventory().addItem(normal);
-                        }
-
-                        Bukkit.broadcastMessage(ChatUtil.fixColorsWithPrefix("&9Caly serwer otrzymal &8(&fx" + amount + "&8) &enormal key"));
-                    }
-                    else
-                    {
-                        sender.sendMessage("/key [normal] [ilosc] [gracz;all]");
-                    }
-                }
-                else if(Bukkit.getPlayer(args[2]) != null && Bukkit.getPlayer(args[2]).isOnline())
-                {
-                    if(args[0].equalsIgnoreCase("normal"))
-                    {
-                        ItemStack normal = PremiumKey.NormalKey(amount);
-                        Player p = Bukkit.getPlayer(args[2]);
-                        p.getInventory().addItem(normal);
-                        p.sendMessage(ChatUtil.fixColorsWithPrefix("&aotrzymales &8(&fx" + amount + "&8) &enormal key"));
-                    }
-                    else if(args[0].equalsIgnoreCase("all"))
-                    {
-                        Player p = Bukkit.getPlayer(args[2]);
-
-                        ItemStack normal = PremiumKey.NormalKey(amount);
-
-                        p.getInventory().addItem(normal);
-                        p.sendMessage(ChatUtil.fixColorsWithPrefix("&aotrzymales &8(&fx" + amount + "&8) &enormal, rare, epic, legendary key"));
-                    }
-                    else
-                    {
-                        sender.sendMessage("/key [normal;rare;epic;legend;all] [ilosc] [gracz;all]");
-                    }
+                    ItemStack key = PremiumKey.getKey(args[0], amount);
+                    Player player = Bukkit.getPlayer(args[2]);
+                    player.getInventory().addItem(key);
+                    player.sendMessage(ChatUtil.fixColorsWithPrefix("&aotrzymales &8(&fx" + amount + "&8) &e" + args[0] + " key"));
                 }
                 else
                 {
@@ -90,42 +58,14 @@ public class KeyCommand implements CommandExecutor {
             }
             else
             {
-                sender.sendMessage("/key [normal;rare;epic;legend;all] [ilosc] [gracz;all]");
+                sender.sendMessage("/key [nazwa skrzynki] [ilosc] [gracz]");
             }
 
             return false;
         }
-
-        Player p = (Player) sender;
-
-        if(p.hasPermission("symi.case.admin"))
-        {
-            if(args.length == 1)
-            {
-                int amount = 1;
-                try
-                {
-                    amount = Integer.parseInt(args[0]);
-                }
-                catch(Exception e)
-                {
-                    p.sendMessage(ChatUtil.fixColorsWithPrefix("&cpodaj liczbe calkowita"));
-                    return false;
-                }
-
-
-                ItemStack normalKey = PremiumKey.NormalKey(amount);
-
-                p.getInventory().addItem(normalKey);
-            }
-            else
-            {
-                p.sendMessage(ChatUtil.fixColorsWithPrefix("&c/key [ilosc]"));
-            }
-        }
         else
         {
-            p.sendMessage(ChatUtil.fixColorsWithPrefix("Zakup usluge na &6https://owncraft.eu"));
+            sender.sendMessage(ChatUtil.fixColorsWithPrefix("&cNie posiadasz uprawnien"));
         }
 
         return false;

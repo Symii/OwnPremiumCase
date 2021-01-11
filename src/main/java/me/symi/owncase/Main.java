@@ -11,18 +11,17 @@ import me.symi.owncase.listeners.InventoryListeners;
 import me.symi.owncase.listeners.PlayerListeners;
 import me.symi.owncase.manager.ConfigManager;
 import me.symi.owncase.manager.FileManager;
-import me.symi.owncase.owncase.OwnCase;
+import me.symi.owncase.manager.LocationManager;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class Main extends JavaPlugin{
 
     private static Main INSTANCE;
     public HashMap<UUID, Inventory> playerCase = new HashMap<>();
     public HashMap<UUID, Integer> current = new HashMap<>();
-    private OwnCase ownCase;
+    private LocationManager locationManager;
     private ConfigManager configManager;
     private FileManager fileManager;
 
@@ -40,21 +39,13 @@ public class Main extends JavaPlugin{
         manager.registerEvents(new BlockListeners(this), this);
         manager.registerEvents(new PlayerListeners(this), this);
         manager.registerEvents(new InventoryListeners(this), this);
-        getCommand("key").setExecutor(new KeyCommand());
-        getCommand("setcase").setExecutor(new SetcaseCommand());
-        getCommand("case").setExecutor(new CaseCommand());
-
-        new BukkitRunnable()
-        {
-            @Override
-            public void run()
-            {
-                ownCase = new OwnCase(INSTANCE);
-            }
-        }.runTaskLater(this, 10L);
+        getCommand("key").setExecutor(new KeyCommand(this));
+        getCommand("setcase").setExecutor(new SetcaseCommand(this));
+        getCommand("case").setExecutor(new CaseCommand(this));
 
         configManager = new ConfigManager(this);
         fileManager = new FileManager(this);
+        locationManager = new LocationManager(this);
     }
 
     public static Main getInst()
@@ -62,9 +53,8 @@ public class Main extends JavaPlugin{
         return INSTANCE;
     }
 
-    public OwnCase getOwnCase()
-    {
-        return ownCase;
+    public LocationManager getLocationManager() {
+        return locationManager;
     }
 
     public ConfigManager getConfigManager() {

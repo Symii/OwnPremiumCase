@@ -1,6 +1,7 @@
 package me.symi.owncase.manager;
 
 import me.symi.owncase.Main;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -21,44 +22,61 @@ public class FileManager {
     {
         this.plugin = plugin;
         plugin.saveDefaultConfig();
-        loadConifgs();
+        try {
+            loadConifgs();
+        } catch (IOException | InvalidConfigurationException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void loadConifgs()
-    {
-        File data_folder = new File(plugin.getDataFolder() + File.separator + "cases");
-        if(!data_folder.exists())
+    private void loadConifgs() throws IOException, InvalidConfigurationException {
+        File normal_case = new File(plugin.getDataFolder() + File.separator + "cases", "normal_case.yml");
+        if(!normal_case.exists())
         {
-            data_folder.getParentFile().mkdir();
+            normal_case.getParentFile().mkdir();
+            plugin.saveResource("normal_case.yml", false);
+            File createdFile = new File(plugin.getDataFolder(), "normal_case.yml");
+            createdFile.renameTo(new File(plugin.getDataFolder() + File.separator + "cases" + File.separator + "normal_case.yml"));
         }
+
+        File locations = new File(plugin.getDataFolder(), "locations.yml");
+        if(!locations.exists())
+        {
+            plugin.saveResource("locations.yml", false);
+        }
+
+        FileConfiguration locations_config = new YamlConfiguration();
+        locations_config.load(locations);
+        case_configs.add(locations_config);
+        case_files.add(locations);
+
+        File data_folder = new File(plugin.getDataFolder() + File.separator + "cases");
         for(File files : data_folder.listFiles())
         {
             FileConfiguration config = new YamlConfiguration();
-            try
-            {
-                config.load(files);
-                case_configs.add(config);
-                case_files.add(files);
-            }
-            catch(IOException | InvalidConfigurationException e)
-            {
-                e.printStackTrace();
-            }
+
+            config.load(files);
+            case_configs.add(config);
+            case_files.add(files);
         }
     }
 
-    public void reloadConigs()
+    public void reloadConfigs()
     {
         case_configs.clear();
         case_files.clear();
-        loadConifgs();
+        try {
+            loadConifgs();
+        } catch (IOException | InvalidConfigurationException e) {
+            e.printStackTrace();
+        }
     }
 
     public File getFile(String name)
     {
         for(File file : case_files)
         {
-            if(file.getName().equalsIgnoreCase(name))
+            if(file.getName().equalsIgnoreCase(name + ".yml"))
             {
                 return file;
             }
@@ -66,12 +84,14 @@ public class FileManager {
         return null;
     }
 
-    public FileConfiguration getConfig(String name)
+    public FileConfiguration getConfig(String name) throws IOException, InvalidConfigurationException
     {
-        for(FileConfiguration config : case_configs)
+        for(File file : case_files)
         {
-            if(config.getName().contains(name))
+            if(file.getName().equalsIgnoreCase(name + ".yml"))
             {
+                FileConfiguration config = new YamlConfiguration();
+                config.load(file);
                 return config;
             }
         }
@@ -98,8 +118,7 @@ public class FileManager {
         }
     }
 
-    public List<ItemStack> getPremiumCaseItems(String case_name)
-    {
+    public List<ItemStack> getPremiumCaseItems(String case_name) throws IOException, InvalidConfigurationException {
         List<ItemStack> items = new ArrayList<>();
         FileConfiguration config = getConfig(case_name);
         for(String s : config.getConfigurationSection("drop").getKeys(false))

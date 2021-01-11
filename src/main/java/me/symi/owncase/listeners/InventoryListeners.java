@@ -27,7 +27,7 @@ public class InventoryListeners implements Listener {
     {
         if(event.getView().getTitle().contains(ChatUtil.fixColors("&4&lSkrzynka &7- &e")))
         {
-            String case_name = event.getView().getTitle().substring(18);
+            String case_name = event.getView().getTitle().substring(19);
             List<ItemStack> items = new ArrayList<>();
 
             for(ItemStack item : event.getInventory().getContents())
@@ -38,7 +38,7 @@ public class InventoryListeners implements Listener {
                 }
             }
 
-            try 
+            try
             {
                 if(items.size() >= 1)
                 {
@@ -64,11 +64,8 @@ public class InventoryListeners implements Listener {
             return;
         }
 
-        if(e.getView().getTitle().equalsIgnoreCase(ChatUtil.fixColors("&6&lDrop &8- &7zwykla skrzynka")))
-        {
-            e.setCancelled(true);
-        }
-        else if(e.getView().getTitle().equalsIgnoreCase(ChatUtil.fixColors("&7Normalna skrzynka")))
+        if(e.getView().getTitle().contains(ChatUtil.fixColors("&6&lDrop &8- &7"))
+            || e.getView().getTitle().contains(ChatUtil.fixColors("&6&lLosowanie &8- &7")))
         {
             e.setCancelled(true);
         }

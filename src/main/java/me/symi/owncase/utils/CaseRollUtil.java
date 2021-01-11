@@ -4,18 +4,17 @@ import me.symi.owncase.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
+import java.io.IOException;
 
 public class CaseRollUtil {
 
-    private ArrayList<Player> items = new ArrayList<>();
-
-    private void normalCaseRoll(final Player p)
+    public void rollCase(final Player player, final String case_name)
     {
         for(int i = 1; i <= 40; i++)
         {
@@ -25,27 +24,27 @@ public class CaseRollUtil {
                 public void run()
                 {
                     int j = 1;
-                    if(Main.getInst().current.get(p.getUniqueId()) != null)
+                    if(Main.getInst().current.get(player.getUniqueId()) != null)
                     {
-                        j = Main.getInst().current.get(p.getUniqueId()) + 1;
+                        j = Main.getInst().current.get(player.getUniqueId()) + 1;
                     }
-                    Main.getInst().current.put(p.getUniqueId(), j);
+                    Main.getInst().current.put(player.getUniqueId(), j);
 
-                    p.openInventory(createNormalCase(p, "&7Normalna skrzynka"));
-                    p.playSound(p.getLocation(), Sound.ENTITY_CHICKEN_EGG, 1.5f, 1.5f);
+                    player.openInventory(createCase(player, case_name));
+                    player.playSound(player.getLocation(), Sound.ENTITY_CHICKEN_EGG, 1.5f, 1.5f);
                 }
             }.runTaskLater(Main.getInst(), (int) (i * i - (i * i * 0.95)));
         }
 
     }
 
-    private Inventory createNormalCase(Player p, String nazwa)
+    private Inventory createCase(Player player, String case_name)
     {
         Inventory inv;
 
-        if(Main.getInst().playerCase.get(p.getUniqueId()) == null)
+        if(Main.getInst().playerCase.get(player.getUniqueId()) == null)
         {
-            inv = Bukkit.createInventory(p, 27, ChatUtil.fixColors(nazwa));
+            inv = Bukkit.createInventory(player, 27, ChatUtil.fixColors("&6&lLosowanie &8- &7" + case_name));
             ItemStack black = new ItemStack(Material.GRAY_STAINED_GLASS_PANE, 1);
             ItemStack hopper = new ItemStack(Material.HOPPER);
 
@@ -53,8 +52,12 @@ public class CaseRollUtil {
 
             RandomUtil random = new RandomUtil();
 
-            ItemStack item = random.getRandomNormalItem();
-
+            ItemStack item = null;
+            try {
+                item = random.getRandomItemstack(case_name);
+            } catch (IOException | InvalidConfigurationException e) {
+                e.printStackTrace();
+            }
 
             inv.setItem(0, black);
             inv.setItem(1, black);
@@ -86,17 +89,22 @@ public class CaseRollUtil {
             inv.setItem(25, black);
             inv.setItem(26, black);
 
-            Main.getInst().playerCase.put(p.getUniqueId(), inv);
+            Main.getInst().playerCase.put(player.getUniqueId(), inv);
         }
         else
         {
-            inv = Main.getInst().playerCase.get(p.getUniqueId());
+            inv = Main.getInst().playerCase.get(player.getUniqueId());
             ItemStack black = new ItemStack(Material.GRAY_STAINED_GLASS_PANE, 1);
             ItemStack hopper = new ItemStack(Material.HOPPER);
 
             RandomUtil random = new RandomUtil();
 
-            ItemStack item = random.getRandomNormalItem();
+            ItemStack item = null;
+            try {
+                item = random.getRandomItemstack(case_name);
+            } catch (IOException | InvalidConfigurationException e) {
+                e.printStackTrace();
+            }
 
 
             inv.setItem(0, black);
@@ -129,28 +137,18 @@ public class CaseRollUtil {
             inv.setItem(25, black);
             inv.setItem(26, black);
 
-            Main.getInst().playerCase.put(p.getUniqueId(), inv);
+            Main.getInst().playerCase.put(player.getUniqueId(), inv);
         }
 
-        if(Main.getInst().current.get(p.getUniqueId()) != null
-                && Main.getInst().current.get(p.getUniqueId()) >= 40)
+        if(Main.getInst().current.get(player.getUniqueId()) != null
+                && Main.getInst().current.get(player.getUniqueId()) >= 40)
         {
-            Main.getInst().current.remove(p.getUniqueId());
-            Main.getInst().playerCase.remove(p.getUniqueId());
+            Main.getInst().current.remove(player.getUniqueId());
+            Main.getInst().playerCase.remove(player.getUniqueId());
+            player.getInventory().addItem(inv.getItem(13));
 
-            p.getInventory().addItem(inv.getItem(13));
-
-            if(inv.getItem(13).getType() == Material.DIRT)
-            {
-                p.sendMessage(ChatUtil.fixColors("&8» &7Normalna skrzynka &8« &a" + p.getName() + " &fwylosowal &6KOSMICZNY_DIRT &8(&fx" + inv.getItem(13).getAmount() + "&8)"));
-                p.playSound(p.getLocation(), Sound.ENTITY_WITHER_DEATH, 100f, 100f);
-            }
-            else
-            {
-                p.sendMessage(ChatUtil.fixColors("&8» &7Normalna skrzynka &8« &a" + p.getName() + " &fwylosowal &6" + inv.getItem(13).getType() + " &8(&fx" + inv.getItem(13).getAmount() + "&8)"));
-            }
-
-            FireworkUtil.spawnFirework(p);
+            player.sendMessage(ChatUtil.fixColors("&8» &7" + case_name + " &8« &a" + player.getName() + " &fwylosowal &6" + inv.getItem(13).getType() + " &8(&fx" + inv.getItem(13).getAmount() + "&8)"));
+            FireworkUtil.spawnFirework(player);
         }
 
 
