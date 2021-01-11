@@ -4,10 +4,12 @@ import me.symi.owncase.Main;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class FileManager {
 
@@ -68,12 +70,44 @@ public class FileManager {
     {
         for(FileConfiguration config : case_configs)
         {
-            if(config.getName().equalsIgnoreCase(name))
+            if(config.getName().contains(name))
             {
                 return config;
             }
         }
         return null;
+    }
+
+    public void savePremiumCase(String case_name, List<ItemStack> items) throws IOException, InvalidConfigurationException
+    {
+        File file = new File(plugin.getDataFolder() + File.separator + "cases", case_name + ".yml");
+        if(!file.exists())
+        {
+            file.createNewFile();
+            FileConfiguration configuration = new YamlConfiguration();
+            configuration.load(file);
+            int counter = 1;
+            for(ItemStack item : items)
+            {
+                configuration.set("drop." + counter, item);
+                counter++;
+            }
+            configuration.save(file);
+            case_files.add(file);
+            case_configs.add(configuration);
+        }
+    }
+
+    public List<ItemStack> getPremiumCaseItems(String case_name)
+    {
+        List<ItemStack> items = new ArrayList<>();
+        FileConfiguration config = getConfig(case_name);
+        for(String s : config.getConfigurationSection("drop").getKeys(false))
+        {
+            ItemStack item = config.getItemStack("drop." + s);
+            items.add(item);
+        }
+        return items;
     }
 
 }

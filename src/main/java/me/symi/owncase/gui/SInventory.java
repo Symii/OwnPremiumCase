@@ -1,4 +1,4 @@
-package me.symi.owncase.preview;
+package me.symi.owncase.gui;
 
 import me.symi.owncase.utils.ChatUtil;
 import org.bukkit.Bukkit;
