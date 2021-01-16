@@ -44,17 +44,31 @@ public class KeyCommand implements CommandExecutor {
                     return false;
                 }
 
-                if(Bukkit.getPlayer(args[2]) != null && Bukkit.getPlayer(args[2]).isOnline())
+                if(args[2].equalsIgnoreCase("all"))
                 {
                     ItemStack key = PremiumKey.getKey(args[0], amount);
-                    Player player = Bukkit.getPlayer(args[2]);
-                    player.getInventory().addItem(key);
-                    player.sendMessage(ChatUtil.fixColorsWithPrefix("&aotrzymales &8(&fx" + amount + "&8) &e" + args[0] + " key"));
+                    for(Player p : Bukkit.getOnlinePlayers())
+                    {
+                        p.getInventory().addItem(key);
+                        p.sendMessage(ChatUtil.fixColorsWithPrefix("&aotrzymales &8(&fx" + amount + "&8) &e" + args[0] + " key"));
+                    }
+                    Bukkit.broadcastMessage(ChatUtil.fixColorsWithPrefix("&eCaly serwer otrzymal &8(&fx" + amount + "&8) &e" + args[0] + " key"));
                 }
-                else
-                {
-                    sender.sendMessage("Podany gracz jest offline");
+                else {
+                    if(Bukkit.getPlayer(args[2]) != null && Bukkit.getPlayer(args[2]).isOnline())
+                    {
+                        ItemStack key = PremiumKey.getKey(args[0], amount);
+                        Player player = Bukkit.getPlayer(args[2]);
+                        player.getInventory().addItem(key);
+                        player.sendMessage(ChatUtil.fixColorsWithPrefix("&aotrzymales &8(&fx" + amount + "&8) &e" + args[0] + " key"));
+                    }
+                    else
+                    {
+                        sender.sendMessage("Podany gracz jest offline");
+                    }
                 }
+
+
             }
             else
             {

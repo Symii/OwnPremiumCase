@@ -11,7 +11,7 @@ public class ChatUtil {
 
     public static String fixColorsWithPrefix(String text)
     {
-        return "§f§lO§9§lC §8»§7 " + ChatColor.translateAlternateColorCodes('&', text);
+        return "§eSerwer §8»§7 " + ChatColor.translateAlternateColorCodes('&', text);
     }
 
 }

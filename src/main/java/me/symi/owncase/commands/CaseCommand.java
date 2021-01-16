@@ -38,9 +38,19 @@ public class CaseCommand implements CommandExecutor {
         {
             if(args.length == 2)
             {
-                if(args[0].equalsIgnoreCase("create"))
+                if(args[0].equalsIgnoreCase("edit"))
                 {
-                    player.openInventory(CaseCreateGUI.getInventory(player, args[1]));
+                    String case_name = args[1];
+                    try {
+                        player.openInventory(CaseCreateGUI.getEditInventory(player, case_name));
+                    } catch (IOException | InvalidConfigurationException e) {
+                        player.sendMessage(ChatUtil.fixColorsWithPrefix("&cBłąd... Zglos to do autora pluginu."));
+                    }
+                }
+                else if(args[0].equalsIgnoreCase("create"))
+                {
+                    String case_name = args[1];
+                    player.openInventory(CaseCreateGUI.getInventory(player, case_name));
                 }
                 else if(args[0].equalsIgnoreCase("roll"))
                 {

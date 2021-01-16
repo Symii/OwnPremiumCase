@@ -116,6 +116,26 @@ public class FileManager {
             case_files.add(file);
             case_configs.add(configuration);
         }
+        else
+        {
+            FileConfiguration configuration = new YamlConfiguration();
+            configuration.load(file);
+
+            case_configs.remove(configuration);
+            case_files.remove(file);
+            file.delete();
+
+            file.createNewFile();
+            int counter = 1;
+            for(ItemStack item : items)
+            {
+                configuration.set("drop." + counter, item);
+                counter++;
+            }
+            configuration.save(file);
+            case_files.add(file);
+            case_configs.add(configuration);
+        }
     }
 
     public List<ItemStack> getPremiumCaseItems(String case_name) throws IOException, InvalidConfigurationException {
